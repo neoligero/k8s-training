@@ -1,0 +1,39 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: wordpress
+  namespace: exercise-02
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: wordpress
+    spec:
+      containers:
+      - image: bitnami/wordpress:4.9.4
+        name: wordpress
+        env:
+        - name: WORDPRESS_DATABASE_HOST
+          value: mariadb
+        - name: WORDPRESS_DATABASE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: wp-mdb-secret
+              key: password
+        ports:
+        - name: http
+          containerPort: 80
+        livenessProbe:
+          exec:
+            command: ["curl", "-X", "GET", "127.0.0.1"]
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+        readinessProbe:
+          exec:
+            command: ["curl", "-X", "GET", "127.0.0.1"]
+          initialDelaySeconds: 5
+          periodSeconds: 2
+          timeoutSeconds: 1
+          

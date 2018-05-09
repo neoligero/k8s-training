@@ -1,0 +1,51 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: mariadb
+  namespace: exercise-02
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: mariadb
+    spec:
+      containers:
+      - image: bitnami/mariadb:latest
+        name: mariadb
+        env:
+        - name: MARIADB_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: wp-mdb-secret
+              key: rootpass
+        - name: MARIADB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: wp-mdb-secret
+              key: password
+        - name: MARIADB_USER
+          valueFrom:
+            configMapKeyRef:
+              name: wp-mdb-config
+              key: user
+        - name: MARIADB_DATABASE
+          valueFrom:
+            configMapKeyRef:
+              name: wp-mdb-config
+              key: database
+        ports:
+        - name: http
+          containerPort: 3306
+        livenessProbe:
+          exec:
+            command: ["mysqladmin", "ping"]
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+        readinessProbe:
+          exec:
+            command: ["mysql", "-h", "127.0.0.1", "-u", "bn_wordpress", "-pbitnamimola", "-e", "SELECT 1"]
+          initialDelaySeconds: 5
+          periodSeconds: 2
+          timeoutSeconds: 1

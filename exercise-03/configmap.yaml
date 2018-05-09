@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: wp-mdb-config
+  namespace: exercise-03
+data:
+  host: externaldb
+  user: k8s_training_user_16
+  database: k8s_training_db_16

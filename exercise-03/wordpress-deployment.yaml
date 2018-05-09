@@ -1,0 +1,40 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: wordpress
+  namespace: exercise-03
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: wordpress
+    spec:
+      containers:
+      - image: bitnami/wordpress:latest
+        name: wordpress
+        env:
+        - name: WORDPRESS_DATABASE_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: wp-mdb-config
+              key: host
+        - name: WORDPRESS_DATABASE_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: wp-mdb-config
+              key: database
+        - name: WORDPRESS_DATABASE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: wp-mdb-secret
+              key: password
+        - name: WORDPRESS_DATABASE_USER
+          valueFrom:
+            configMapKeyRef:
+              name: wp-mdb-config
+              key: user
+        ports:
+        - name: http
+          containerPort: 80
+          
