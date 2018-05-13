@@ -8,13 +8,14 @@ spec:
   template:
     metadata:
       labels:
-        app: wordpress
+        app: wordpress-canary
+        type: wpfront
     spec:
       containers:
       - image: bitnami/wordpress:4.9.5
         name: wordpress
         env:
-        - name: WORDPRESS_DATABASE_HOST
+        - name: MARIADB_HOST
           value: mariadb
         - name: WORDPRESS_DATABASE_PASSWORD
           valueFrom:

@@ -5,5 +5,10 @@ metadata:
   namespace: exercise-03
 data:
   host: externaldb
-  user: k8s_training_user_16
-  database: k8s_training_db_16
+  dbname: k8s_training_db_16
+  dbuser: k8s_training_user_16
+  wpuser: julio_iglesias
+  wpblogname: La vida sigue igual
+  wpfirstname: Julio
+  wplastname: Iglesias de la Cueva
+  

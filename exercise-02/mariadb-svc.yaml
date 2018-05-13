@@ -4,7 +4,7 @@ metadata:
   name: mariadb
   namespace: exercise-02
 spec:
-  type: NodePort
+  type: ClusterIP
   ports:
   - name: http
     port: 3306

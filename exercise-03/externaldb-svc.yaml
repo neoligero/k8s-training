@@ -6,5 +6,3 @@ metadata:
 spec:
   type: ExternalName
   externalName: kubernetes-training.cfxyxg2jnovx.us-east-1.rds.amazonaws.com
-  ports: 
-    - port: 3306 

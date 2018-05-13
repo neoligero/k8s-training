@@ -35,5 +35,5 @@ spec:
               name: wp-mdb-config
               key: database
         ports:
-        - name: http
+        - name: mariadbport
           containerPort: 3306

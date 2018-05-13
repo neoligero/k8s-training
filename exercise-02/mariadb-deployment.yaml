@@ -39,13 +39,17 @@ spec:
           containerPort: 3306
         livenessProbe:
           exec:
-            command: ["mysqladmin", "ping"]
+            command: 
+            - mysqladmin
+            - ping
           initialDelaySeconds: 30
           periodSeconds: 10
           timeoutSeconds: 5
         readinessProbe:
           exec:
-            command: ["mysql", "-h", "127.0.0.1", "-u", "bn_wordpress", "-pbitnamimola", "-e", "SELECT 1"]
+            command:
+            - mysqladmin
+            - ping
           initialDelaySeconds: 5
           periodSeconds: 2
           timeoutSeconds: 1

@@ -13,8 +13,11 @@ spec:
       containers:
       - image: bitnami/wordpress:latest
         name: wordpress
+        ports:
+        - name: http
+          containerPort: 80
         env:
-        - name: WORDPRESS_DATABASE_HOST
+        - name: MARIADB_HOST
           valueFrom:
             configMapKeyRef:
               name: wp-mdb-config
@@ -23,18 +26,54 @@ spec:
           valueFrom:
             configMapKeyRef:
               name: wp-mdb-config
-              key: database
+              key: dbname
         - name: WORDPRESS_DATABASE_PASSWORD
           valueFrom:
             secretKeyRef:
               name: wp-mdb-secret
-              key: password
+              key: dbpassword
         - name: WORDPRESS_DATABASE_USER
           valueFrom:
             configMapKeyRef:
               name: wp-mdb-config
-              key: user
-        ports:
-        - name: http
-          containerPort: 80
+              key: dbuser
+        - name: WORDPRESS_USERNAME
+          valueFrom:
+            configMapKeyRef:
+              name: wp-mdb-config
+              key: wpuser
+        - name: WORDPRESS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: wp-mdb-secret
+              key: wppassword
+        - name: WORDPRESS_BLOG_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: wp-mdb-config
+              key: wpblogname
+        - name: WORDPRESS_FIRST_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: wp-mdb-config
+              key: wpfirstname
+        - name: WORDPRESS_LAST_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: wp-mdb-config
+              key: wplastname
+        livenessProbe:
+          httpGet:
+            path: /wp-admin
+            port: http
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /wp-admin
+            port: http
+          initialDelaySeconds: 5
+          periodSeconds: 2
+          timeoutSeconds: 1
           
