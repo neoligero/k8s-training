@@ -1,0 +1,79 @@
+# Source: wordpress/charts/mariadb/templates/deployment.yaml
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: blog-mariadb
+  labels:
+    app: blog-mariadb
+    chart: "mariadb-2.1.1"
+    release: "blog"
+    heritage: "Tiller"
+spec:
+  template:
+    metadata:
+      labels:
+        app: blog-mariadb
+    spec:
+      securityContext:
+        runAsUser: 1001
+        fsGroup: 1001
+#      initContainers:
+#      - name: "copy-custom-config"
+#        image: "busybox"
+#        imagePullPolicy: "IfNotPresent"
+#        command: ["sh", "-c", "mkdir -p /bitnami/mariadb/conf && cp /bitnami/mariadb_config/my.cnf /bitnami/mariadb/conf/my_custom.cnf"]
+#        volumeMounts:
+#        - name: config
+#          mountPath: /bitnami/mariadb_config
+#        - name: data
+#          mountPath: /bitnami/mariadb
+      containers:
+      - name: mariadb
+        image: "bitnami/mariadb:10.1.29-r1"
+        imagePullPolicy: "IfNotPresent"
+        env:
+        - name: MARIADB_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: blog-mariadb
+              key: mariadb-root-password
+        - name: MARIADB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: blog-mariadb
+              key: mariadb-password
+        - name: MARIADB_USER
+          value: "bn_wordpress"
+        - name: MARIADB_DATABASE
+          value: "bitnami_wordpress"
+        ports:
+        - name: mysql
+          containerPort: 3306
+        livenessProbe:
+          exec:
+            command:
+            - mysqladmin
+            - ping
+          initialDelaySeconds: 30
+          timeoutSeconds: 5
+        readinessProbe:
+          exec:
+            command:
+            - mysqladmin
+            - ping
+          initialDelaySeconds: 5
+          timeoutSeconds: 1
+        resources:
+          requests:
+            cpu: 250m
+            memory: 256Mi
+#        volumeMounts:
+#        - name: data
+#          mountPath: /bitnami/mariadb
+#      volumes:
+#      - name: config
+#        configMap:
+#          name: blog-mariadb
+#      - name: data
+#        persistentVolumeClaim:
+#          claimName: blog-mariadb
